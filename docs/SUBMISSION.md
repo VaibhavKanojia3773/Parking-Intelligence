@@ -7,24 +7,30 @@ Parking Intelligence — AI Hotspot Detection, Congestion-Impact Scoring & Targe
 Poor Visibility on Parking-Induced Congestion
 
 ## Description
-(plain text — paste directly, no markdown)
+(formatted — the form supports formatting; paste as-is)
 
-Bengaluru's traffic police write thousands of parking tickets every month, and most of that data just sits in a spreadsheet. We turned 298,450 of those records into a system that tells enforcement exactly where to go, why it matters, and what to do when they get there.
+**From 298,450 raw parking tickets to a deployable enforcement plan — built entirely on the dataset provided.**
 
-The problem statement asks for three things. We deliver all three, and we prove the hard one.
+Bengaluru's traffic police write thousands of parking tickets a month, and most of that data just sits in a spreadsheet. We turned it into a system that tells enforcement exactly where to go, why it matters, and what to do when they get there. The problem statement asks for three things. We deliver all three, and we prove the hard one.
 
-Find the real hotspots. Raw ticket counts only show you where police already patrol. We rank instead by how many violations each patrol visit actually catches, which exposes 234 hotspots that are packed with illegal parking but barely policed. And we checked it holds up: high-yield locations stay high-yield on data the model never saw (held-out correlation 0.61).
+### 🔍 Find the real hotspots
+Raw ticket counts only show where police already patrol. We rank by how many violations each patrol visit actually catches, which exposes **234 hotspots that are packed but barely policed**. And we checked it holds up: high-yield spots stay high-yield on data the model never saw (**held-out correlation 0.61**).
 
-Quantify the damage to traffic flow. The dataset has no flow column, so we built one. The Parking Congestion Impact Score weighs how much carriageway a vehicle steals, on what class of road, how close to a junction, and at what hour. Then we validated it. Trained on the first half of the data, it predicts the worst congestion in the held-out second half at a correlation of 0.65, beating a plain ticket-count baseline. The top 10% of locations carry 3.3x the future load. In plain terms, that's roughly 146 lane-metres of road blocked at every peak.
+### 📊 Quantify the impact on traffic flow
+The data has no flow column, so we built one. The **Parking Congestion Impact Score (PCIS)** weighs how much carriageway a vehicle steals, on what class of road, how close to a junction, and at what hour. Then we validated it: trained on the first half of the data, it predicts the worst congestion in the held-out second half at **correlation 0.65**, beating a plain ticket-count baseline. The top 10% of spots carry **3.3× the future load** — about **146 lane-metres of road blocked at every peak**.
 
-Make it actionable. The system doesn't stop at a map. It generates 668 ready-to-run work orders across all 54 stations: where to stand, which vehicles to target, what time window, and how often to come back (the revisit interval is read straight from the data). One click exports a station's shift briefing as a CSV, so it slots into how the police already operate.
+### 🚓 Turn it into action
+The system doesn't stop at a map. It generates **668 ready-to-run work orders** across all **54 stations**: where to stand, which vehicles to target, what time window, and how often to return (the revisit interval is read straight from the data). One click exports a station's shift briefing as a **CSV**, so it slots into how the police already work.
 
-On top of that there's a next-week hotspot forecast (ROC-AUC 0.96) so units can move before congestion forms, and a 3D command center built with deck.gl that you can actually fly through. It's deployed and live.
+### ⚡ And more
+A **next-week hotspot forecast (ROC-AUC 0.96)** so units move before congestion forms, and an interactive **3D command center** (deck.gl + MapLibre) you can fly through. It's deployed and live.
 
-Every number above comes from the dataset we were given. No external feeds, no live APIs, no hand-waving. We also state our assumptions openly, including the things enforcement data alone cannot prove.
+---
 
-Live demo: https://parking-intelligence.vercel.app/
-Stack: React, TypeScript, deck.gl, MapLibre, Python (pandas, scikit-learn, XGBoost, LightGBM, CatBoost).
+**Every number comes from the dataset we were given.** No external feeds, no live APIs, no hand-waving — and we state our assumptions openly, including what enforcement data alone can't prove.
+
+🔗 **Live demo:** https://parking-intelligence.vercel.app/
+🛠 **Stack:** React · TypeScript · deck.gl · MapLibre · Python (pandas, scikit-learn, XGBoost / LightGBM / CatBoost)
 
 ## Instructions to Run
 ```bash
