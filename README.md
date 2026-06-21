@@ -11,6 +11,8 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![XGBoost](https://img.shields.io/badge/XGBoost-GPU-EB5E28)
 
+### [▶ Live demo — parking-intelligence.vercel.app](https://parking-intelligence.vercel.app/)
+
 <img src="docs/img/hero.png" width="100%" alt="3D parking-impact command center" />
 
 </div>

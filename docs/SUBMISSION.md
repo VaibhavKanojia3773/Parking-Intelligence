@@ -56,4 +56,6 @@ python pipeline/build_forecast.py      # next-7-day forecast artifacts
 
 # 3) (Optional) Heavy GPU training on Kaggle — see kaggle/README.md
 ```
-Live demo: <DEPLOYED_URL>  ·  Repo: <GITHUB_URL>  ·  Demo video: <VIDEO_URL>
+Live demo: https://parking-intelligence.vercel.app/
+Repo: https://github.com/VaibhavKanojia3773/Parking-Intelligence
+Demo video: <VIDEO_URL>
