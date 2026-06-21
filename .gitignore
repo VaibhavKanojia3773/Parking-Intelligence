@@ -1,0 +1,22 @@
+# --- raw datasets (too large for GitHub; provided by hackathon) ---
+*.csv
+
+# --- node ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+node_modules/
+
+# --- python ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- os / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# NOTE: frontend/public/data/*.json IS committed on purpose — the live demo
+# reads those artifacts. Only the raw source CSVs are excluded.

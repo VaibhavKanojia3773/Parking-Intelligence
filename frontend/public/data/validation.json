@@ -1,0 +1,60 @@
+{
+  "n_cells_tested": 1407,
+  "target": "future lane-blocking footprint (held-out 2nd half)",
+  "spearman_pcis_vs_future_impact": 0.646,
+  "spearman_rawcount_vs_future_impact": 0.579,
+  "pcis_edge_over_count": 0.067,
+  "spearman_pcis_vs_future_load": 0.587,
+  "spearman_rawcount_vs_future_load": 0.687,
+  "top_decile_future_lift": 3.3,
+  "ablation": [
+    {
+      "component": "obstr",
+      "validity_without": 0.535,
+      "contribution": 0.111
+    },
+    {
+      "component": "vol",
+      "validity_without": 0.547,
+      "contribution": 0.098
+    },
+    {
+      "component": "chron",
+      "validity_without": 0.629,
+      "contribution": 0.017
+    },
+    {
+      "component": "road",
+      "validity_without": 0.646,
+      "contribution": -0.0
+    },
+    {
+      "component": "peak",
+      "validity_without": 0.653,
+      "contribution": -0.008
+    },
+    {
+      "component": "junc",
+      "validity_without": 0.682,
+      "contribution": -0.037
+    }
+  ],
+  "weight_sensitivity": {
+    "perturbation": "+/-25% per weight, 300 draws",
+    "mean_rank_spearman": 0.998,
+    "min_rank_spearman": 0.994,
+    "mean_top50_overlap": 0.977
+  },
+  "bias_correction": {
+    "test": "per-patrol yield stability (H1 vs H2), confound-free",
+    "yield_stability_spearman": 0.605,
+    "n_cells": 1516,
+    "note": "Violations caught per patrol visit is a stable property of a location (H1->H2). Intensity therefore flags genuinely high-demand spots, independent of how often they happen to be patrolled. We do NOT claim to validate latent demand against future counts \u2014 that is impossible from enforcement data alone (the same bias suppresses both halves), which is exactly why a per-visit-yield metric is the honest one."
+  },
+  "bias": {
+    "morning_rush_share": 39.0,
+    "evening_rush_share": 0.2,
+    "morning_to_evening_ratio": 182.5,
+    "note": "Enforcement is morning-skewed; evening illegal parking is systematically under-recorded. Hotspots are corrected for this by modelling persistence, not raw counts."
+  }
+}

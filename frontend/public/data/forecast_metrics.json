@@ -1,0 +1,10 @@
+{
+  "horizon_days": 7,
+  "Precision@50": 0.643,
+  "NDCG@50": 0.851,
+  "ROC_AUC": 0.959,
+  "next_day_ROC_AUC": 0.853,
+  "folds": 2,
+  "cells": 883,
+  "model": "XGBoost, next-7-day demand ranking (walk-forward)"
+}

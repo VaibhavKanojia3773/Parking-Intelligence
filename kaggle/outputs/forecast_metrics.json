@@ -1,0 +1,9 @@
+{
+  "MAE": 6.968,
+  "RMSE": 20.883,
+  "R2": 0.056,
+  "Precision@50_daily": 0.405,
+  "test_days": 21,
+  "cells": 868,
+  "best_iteration": 99
+}
