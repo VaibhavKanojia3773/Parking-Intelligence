@@ -1,110 +1,99 @@
-# Parking Intelligence — Pitch Deck (7 slides)
+# Parking Intelligence — Pitch Deck (5 slides)
 
 Live: https://parking-intelligence.vercel.app/ ·
 Code: https://github.com/VaibhavKanojia3773/Parking-Intelligence
-Keep slide text short and bold. Notes are optional talking points.
+Bold the numbers on the actual slides. `[PHOTO]` = drop your own image there.
 
 ---
 
-## Slide 1 — Title / Hook
+## Slide 1 — Title / Hook   *(keep as-is)*
 
 # Parking Intelligence
 ### From 298,450 raw parking tickets to a deployable enforcement plan.
 
 `PS1 — Poor Visibility on Parking-Induced Congestion`
 
-**Banner stats:** 298K records · 1,391 hotspots · PCIS validated ρ 0.65 · forecast AUC 0.96 · 668 work orders · live on Vercel
+**Banner stats:** 298K records · 1,391 hotspots · PCIS validated 0.65 · forecast AUC 0.96 · 668 work orders · live on Vercel
 
-**Visual:** `docs/img/hero.png` (3D command center).
-**Note:** "We find where illegal parking is worst, prove how much it chokes traffic, and hand enforcement a ready-to-run plan — all from the dataset given."
-
----
-
-## Slide 2 — The problem (and the twist)
-
-## Enforcement runs on habit, not impact.
-
-- Patrols go where they always go — **reactive, blind to actual congestion**
-- The data has **no traffic-flow column** → impact must be *engineered*
-- The data is **patrol-biased** → raw counts just rediscover the patrol routes
-
-**That's exactly the two hard problems we solve.**
-
-**Visual:** congested junction photo + a "tickets ≠ impact" arrow.
-**Note:** "Most teams will map ticket counts. That's a map of where police already are. The real problem is hidden underneath it."
+`[PHOTO: hero 3D map]`
+*Hook line: "We find where illegal parking is worst, prove how much it chokes traffic, and hand enforcement a ready-to-run plan — all from the dataset given."*
 
 ---
 
-## Slide 3 — The system: Detect → Quantify → Enable
+## Slide 2 — The problem, and why it's hard
 
-## A full pipeline, mapped 1:1 to the problem statement.
+### Enforcement runs on habit, not impact.
 
-| | What we do | Flex |
-|---|---|---|
-| **Detect** | Bias-corrected hotspots | **234 under-enforced** spots exposed |
-| **Quantify** | Parking Congestion Impact Score | **validated** ρ 0.65, beats raw counts |
-| **Enable** | Roll-call work orders | **668** tasks, 54 stations, CSV-ready |
-| *+ Forecast* | Next-7-day hotspots | **ROC-AUC 0.96** |
+**The gap (from the problem statement)**
+- Illegal & spillover parking chokes carriageways and junctions near markets, metros, events
+- Enforcement is **patrol-based and reactive** — officers go where they always go
+- No view of violations vs. their **actual congestion impact**; hard to prioritize with limited staff
 
-**Visual:** three-column Detect/Quantify/Enable graphic.
-**Note:** "Not a dashboard you stare at — an end-to-end system that outputs what a constable does at 9am."
+**The two catches in the data — which we solve**
+- It has **no traffic-flow column** → impact has to be *engineered*
+- It's **patrol-biased** → raw ticket counts just re-draw the patrol routes
 
----
+**Our answer — one pipeline, mapped 1:1 to the PS**
+> **Detect** (bias-corrected) → **Quantify** (validated score) → **Enable** (work orders) → *+ Forecast*
 
-## Slide 4 — The innovation: PCIS (validated)
-
-## We built the traffic-flow signal the data was missing.
-
-**PCIS** = carriageway occupancy × road criticality × junction proximity × peak timing × chronicity
-
-- Trained on first half, tested on held-out second half → predicts real future congestion at **ρ 0.65** (beats raw-count baseline 0.58)
-- Top-10% locations carry **3.3× the future burden**
-- Weights stress-tested: ranking holds at **ρ 0.998** under ±25% shake
-- Translated to plain English: **~146 lane-metres of road blocked at every peak**
-
-**Visual:** `docs/img/impact.png`.
-**Note:** "This is the hard sentence in the PS — quantify impact on flow with no flow data. We engineered it and then proved it on data it never saw."
+`298,450 records · 54 stations · Nov 2023 – Apr 2024`
+`[PHOTO: congested junction OR a "patrol guesswork vs targeted" graphic]`
 
 ---
 
-## Slide 5 — From map to roll-call (the operational flex)
+## Slide 3 — Quantify the impact (our core innovation)
 
-## It tells you where to stand, when, and what to target.
+### We built the traffic-flow signal the data was missing — and validated it.
 
-- **234 under-enforced** hotspots — busy but barely policed (per-visit yield, stable ρ 0.61)
-- **45 choked carriageways** ranked — clear a corridor, not a dot
-- **668 work orders**: location · violation + vehicle · time window · lane-metres · **revisit cadence from the data**
-- One-click **CSV briefing** per station — drops into the existing shift workflow, zero change
+**Parking Congestion Impact Score (PCIS)**
+`carriageway occupancy × road criticality × junction proximity × peak timing × chronicity`
 
-**Visual:** `docs/img/work-orders.png` + `docs/img/detect.png`.
-**Note:** "Feasibility isn't a slide for us — the output is already in the format a control room uses."
+**Proven on held-out data (trained on first half, tested on second)**
+- Predicts the worst future congestion at **correlation 0.65** — beats a raw ticket-count baseline (0.58)
+- Top-10% locations carry **3.3× the future load** of an average spot
+- Weights are robust: ranking holds at **0.998** under ±25% perturbation
 
----
+**Made tangible**
+- ≈ **146 lane-metres** of carriageway blocked at every peak (~**1.6 lane-km·hours/day** of road-time lost)
+- Rolled up to **45 most-choked carriageways** — clear a corridor, not a dot
 
-## Slide 6 — The product + the forecast
-
-## A 3D command center you can fly through.
-
-- **deck.gl + MapLibre** — extruded 3D impact hexagons & PCIS columns over a dark map
-- Adaptive zoom, 24-hour time-lapse, hover, cinematic fly-to, guided **story mode**
-- **Next-7-day forecast** (XGBoost + LightGBM + CatBoost ensemble): **AUC 0.96 · P@50 64% · NDCG 0.85**
-- **Live now:** parking-intelligence.vercel.app *(switch to demo)*
-
-**Visual:** live demo / `docs/img/forecast.png`.
-**Note:** "Everything we described is one interactive surface, deployed and reproducible."
+`[PHOTO: Impact tab — validation bars + lane-metres card]`
 
 ---
 
-## Slide 7 — Why it stands out / Close
+## Slide 4 — What it actually does (operational output)
 
-## Impact-based enforcement, validated and live.
+### From a heatmap to a 9 a.m. roll-call briefing.
 
-- **Impact:** same officers, redirected by measured impact — more relief per patrol-hour
-- **Innovation:** an engineered, *validated* congestion-impact score + bias correction
-- **Feasibility:** runs end-to-end on the given data, deployed, exportable to CSV
-- **Honesty:** we state every assumption and even what the data *can't* prove
+**Detect — corrected for patrol bias**
+- Ranks by **yield per patrol visit**, not raw counts → surfaces **234 under-enforced** hotspots (busy, but rarely policed)
+- That yield is **stable across held-out halves (0.61)** → real demand, not patrol luck
 
-**Live:** parking-intelligence.vercel.app · **Code:** github.com/VaibhavKanojia3773/Parking-Intelligence
+**Enable — the deliverable enforcement can use today**
+- **668 ready-to-run work orders** across **54 stations**
+- Each order: **location · target violation + vehicle · time window · lane-metres of impact · revisit cadence** (read straight from the data)
+- **One-click CSV briefing** per station — slots into the existing shift workflow, zero change
 
-**Visual:** hero shot + QR codes.
-**Note:** "Built entirely on the provided dataset. Happy to walk any view live."
+`[PHOTO: Work Orders view (station expanded) + Bias-corrected list]`
+
+---
+
+## Slide 5 — Proactive, interactive, live
+
+### A forecast, a 3D command center, and a real deployment.
+
+**Forecast — move before congestion forms**
+- Next-7-day hotspot ranking, ensemble of **XGBoost + LightGBM + CatBoost**
+- Walk-forward validated: **ROC-AUC 0.96 · Precision@50 64% · NDCG@50 0.85**
+
+**3D command center — built to be used**
+- deck.gl + MapLibre: extruded 3D impact hexagons, 24-hour time-lapse, adaptive zoom, guided story mode
+- **Deployed and live** — not a mockup
+
+**Why it stands out**
+- **Impact:** same officers, redirected by measured impact
+- **Feasibility:** runs end-to-end on the given data, exportable to CSV, already deployed
+- **Honesty:** every assumption stated — including what enforcement data alone can't prove
+
+`Live: parking-intelligence.vercel.app · Code: github.com/VaibhavKanojia3773/Parking-Intelligence`
+`[PHOTO: forecast view OR hero shot + QR codes]`
