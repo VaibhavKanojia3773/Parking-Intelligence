@@ -1,112 +1,189 @@
-# 🅿️ Parking Intelligence — Bengaluru
-### AI-driven detection of illegal-parking hotspots & quantification of their congestion impact
+<div align="center">
 
-> **Problem Statement 1 — Poor Visibility on Parking-Induced Congestion**
-> *"How can AI-driven parking intelligence detect illegal parking hotspots and
-> quantify their impact on traffic flow to enable targeted enforcement?"*
+# Parking Intelligence
 
-The PS asks for exactly three things — **detect hotspots → quantify their impact
-on traffic flow → enable targeted enforcement**. That is the spine of this system,
-built on **298,450 real police parking-violation records** (Bengaluru, Nov 2023 –
-Apr 2024):
+**Detecting illegal-parking hotspots, scoring their impact on traffic flow, and turning both into targeted enforcement — from 298,450 real Bengaluru enforcement records.**
 
-1. **DETECT** — where does illegal parking concentrate? → H3 hotspot detection
-2. **QUANTIFY IMPACT** — how much does it choke traffic? → **Parking Congestion
-   Impact Score (PCIS)**, *validated* on held-out data (see below)
-3. **TARGET** — where do limited units go? → deployment optimizer + ROI curve
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![deck.gl](https://img.shields.io/badge/deck.gl-9-000000?logo=deckdotgl&logoColor=white)
+![MapLibre](https://img.shields.io/badge/MapLibre-GL-396CB2?logo=maplibre&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-GPU-EB5E28)
 
-> A next-day **forecast** is included as a proactive *extension* — clearly labelled,
-> and the graded core does not depend on it.
+<img src="docs/img/hero.png" width="100%" alt="3D parking-impact command center" />
 
-### The impact claim is validated, not asserted
-Trained on the first half of the window, tested on the held-out second half:
-
-| Check | Result |
-|---|---|
-| PCIS predicts future flow-impact (Spearman ρ) | **0.65** |
-| …vs. a raw violation-count baseline | 0.58 → **PCIS wins by +0.07** |
-| Future burden of the top-10% PCIS cells | **3.3× the average cell** |
-| Enforcement bias audited | 39% morning vs **0.2% evening** rush (under-policed) |
-
-PCIS beats raw counts *on the impact dimension* precisely because it weights
-carriageway occupancy, road criticality and junction proximity — not volume.
+</div>
 
 ---
 
-## Why this wins
+## Overview
 
-Maps 1:1 to the PS verbs — and each verb has an *operational* layer, not just a chart:
+Parking Intelligence is an analytics-and-decision system for on-street parking
+enforcement. It ingests anonymized police parking-violation records, locates where
+illegal parking concentrates, scores how much each location degrades traffic flow,
+and emits an operational plan — per-station, per-shift work orders that a control
+room can act on. The full pipeline runs on the provided dataset alone; no external
+or live feeds are required.
 
-| PS verb | What we deliver | Operational layer |
-|---|---|---|
-| **Detect** hotspots | H3 hotspot detection, validated as persistent | **Bias-corrected detection** — ranks by violations-per-patrol-session, surfacing **237 under-enforced** hotspots (hot but rarely policed) |
-| **Quantify** impact on flow | **PCIS**, validated (ρ 0.65, 3.3× lift) | **Carriageway view** — impact aggregated to named roads, so a *corridor* gets enforced, not a point |
-| **Enable** targeted enforcement | Deployment optimizer + ROI curve | **Roll-call work orders** — 668 station×shift tasks (location, target violation+vehicle, time window, revisit cadence), CSV-exportable |
-| *(extension)* proactive | — | **Next-7-day hotspot forecast** (ROC-AUC 0.96 / P@50 64%) for pre-emptive staffing |
+Built for **Problem Statement 1 — Poor Visibility on Parking-Induced Congestion**:
+*detect illegal-parking hotspots and quantify their impact on traffic flow to enable
+targeted enforcement.*
 
-The point: it's not a dashboard you look at — it's a system that outputs **what a constable does at 9am**, corrects for **patrol bias**, and targets **whole carriageways**.
+**Dataset:** 298,450 parking-enforcement records · Bengaluru · Nov 2023 – Apr 2024 ·
+54 police stations.
 
-The hard, original part of PS1 is *"quantify impact on traffic flow"* — and the
-dataset has **no traffic-flow column**. We bridge that with **PCIS**: a parked
-vehicle's harm = the fraction of available **carriageway** it steals, where
-carriageway width comes from real **OpenStreetMap** road class + lane data,
-amplified by junction proximity, peak-hour timing, and chronicity. A scooter on a
-6-lane arterial ≠ a car double-parked on a 2-lane road beside a junction.
+---
+
+## Features
+
+### 1 · Hotspot detection, corrected for patrol bias
+Violations are indexed to H3 hexagons and ranked into 1,391 hotspot cells. Because
+enforcement records are biased toward where police already patrol, the system also
+ranks by **yield per patrol visit** (violations caught per session) — separating
+genuinely dense locations from heavily-patrolled ones, and surfacing **234
+under-enforced** spots that are busy but rarely policed.
+
+### 2 · Parking Congestion Impact Score (PCIS)
+A per-location impact score that combines carriageway occupancy, road criticality,
+junction proximity, peak-hour concentration and chronicity. Impact is also rolled up
+to **whole carriageways** (45 ranked roads) so a corridor can be cleared end-to-end
+rather than a single point. PCIS is translated into a tangible unit — an estimated
+**~146 lane-metres of carriageway blocked at peak**.
+
+<img src="docs/img/impact.png" width="100%" alt="Impact tab — PCIS validation and real-world units" />
+
+### 3 · Targeted-enforcement work orders
+A coverage optimizer turns the priority map into **668 roll-call work orders** across
+54 stations. Each order specifies location, the violation type and vehicle class to
+target, the peak time window, an expected lane-metre impact, and a data-derived
+**revisit cadence** (from the observed recurrence interval). Every station's briefing
+exports to CSV.
+
+<img src="docs/img/work-orders.png" width="100%" alt="Roll-call work orders per station and shift" />
+
+### 4 · Next-7-day hotspot forecast
+A gradient-boosted ensemble ranks each cell by its expected parking load over the
+coming week, so units can be positioned before congestion forms. Validated by
+walk-forward evaluation.
+
+### 5 · Interactive 3D command center
+A WebGL dashboard (deck.gl + MapLibre) for situational awareness:
+- **Extruded 3D impact hexagons** and **PCIS impact columns** over a dark vector map
+- **Adaptive rendering** — a clean heatmap when zoomed out, 3D detail on zoom-in
+- **24-hour time-lapse** of how hotspots shift across the day
+- **Hover inspection**, cinematic fly-to, and a guided **story mode** walkthrough
+- Dedicated views for bias-corrected detection, choked carriageways, deployment, and forecast
+
+---
+
+## Results
+
+All figures are computed from the provided dataset only.
+
+**Impact score is validated, not assumed** — built on the first half of the window,
+tested on the held-out second half:
+
+| Metric | Result |
+| --- | --- |
+| PCIS predicts held-out flow-impact (Spearman ρ) | **0.65** |
+| Raw-count baseline, same test | 0.58 |
+| Future burden of the top-10% PCIS cells | **3.3× average** |
+| Weight robustness (ranking ρ under ±25% perturbation) | **0.998** |
+| Top-50 stability under perturbation | **97.7%** |
+| Per-visit-yield stability across halves (Spearman ρ) | **0.61** |
+
+**Next-7-day forecast** (walk-forward):
+
+| Metric | Result |
+| --- | --- |
+| ROC-AUC | **0.96** |
+| Precision@50 | **64%** |
+| NDCG@50 | **0.85** |
+
+**Operational output:** 234 under-enforced hotspots · 45 ranked carriageways ·
+668 work orders across 54 stations · ≈146 lane-metres blocked at peak (~1.6 lane-km·h
+of road-time lost per day, stated assumptions).
+
+<table>
+<tr>
+<td width="50%"><img src="docs/img/detect.png" alt="Bias-corrected detection" /></td>
+<td width="50%"><img src="docs/img/corridors.png" alt="Choked carriageways" /></td>
+</tr>
+</table>
 
 ---
 
 ## Architecture
 
 ```
- RAW CSV (298k)
-      │
-      ▼
-┌──────────────────────┐     Kaggle GPU pipeline (heavy compute)
-│ 01 data_engine  (H3) │──▶ events.parquet, cells_h3.parquet
-│ 02 PCIS  (OSM/osmnx) │──▶ pcis.json            ◀── the differentiator
-│ 03 forecast (XGB GPU)│──▶ forecast.json + metrics
-│ 04 prioritization    │──▶ deployment_plan.json
-└──────────────────────┘
-      │  artifacts (JSON)
-      ▼
-┌──────────────────────┐     Local (top-notch UI)
-│ frontend  (deck.gl)  │  3D hexbins · impact columns · heatmap ·
-│ React + MapLibre     │  24h time-lapse · hover · enforcement leaderboard
-└──────────────────────┘
+ 298,450 enforcement records (CSV)
+        │
+        ├─ pipeline/  (pandas)            local, no GPU
+        │     build_artifacts.py   → hotspots · PCIS · detection · corridors · work orders · validation
+        │     build_forecast.py    → next-7-day forecast
+        │
+        ├─ kaggle/    (GPU)               optional heavy compute
+        │     01 data engine (H3)
+        │     02 PCIS (OSM-enriched)
+        │     03 forecast ensemble (XGBoost + LightGBM + CatBoost)
+        │     04 deployment optimizer
+        │
+        ▼
+   frontend/public/data/*.json   →   frontend/  (React + deck.gl + MapLibre)
+                                        3D command center
 ```
 
-A light local pre-processor (`pipeline/build_artifacts.py`, pandas only) generates
-demo-ready artifacts from the real data so the dashboard runs without the GPU step;
-the Kaggle scripts produce the production-grade `pcis.json` / `forecast.json`.
+The dashboard reads pre-built JSON artifacts, so it runs end-to-end without the GPU
+step. The Kaggle scripts reproduce and extend those artifacts at full scale.
 
 ---
 
-## Run it
+## Tech stack
 
-**Dashboard (local):**
+**Frontend:** React 18 · TypeScript · Vite · deck.gl 9 · MapLibre GL · Framer Motion
+**Data / ML:** Python 3.12 · pandas · NumPy · scikit-learn · XGBoost · LightGBM · CatBoost · H3
+
+---
+
+## Getting started
+
 ```bash
+# 1 — run the dashboard (demo artifacts are committed; no dataset needed)
 cd frontend
 npm install
 npm run dev          # http://localhost:5173
 ```
-Artifacts are pre-built in `frontend/public/data/`. To rebuild from raw:
+
 ```bash
+# 2 — (optional) rebuild analytics from the raw dataset
+#     place the provided CSVs in the project root, then:
+pip install pandas numpy scikit-learn xgboost
 python pipeline/build_artifacts.py
+python pipeline/build_forecast.py
 ```
 
-**ML pipeline (Kaggle GPU):** see [`kaggle/README.md`](kaggle/README.md).
+Heavy GPU training is documented in [`kaggle/README.md`](kaggle/README.md).
+
+> The raw CSVs are not committed (the enforcement file is 105 MB, above GitHub's
+> limit). The JSON artifacts they produce **are** committed, so the app works
+> out of the box.
 
 ---
 
-## What's inside
+## Project structure
 
 ```
-grid/
-├── pipeline/build_artifacts.py   # local pandas pre-processor → UI artifacts
-├── kaggle/                       # GPU scripts (H3, OSM-PCIS, forecast, optimizer)
-├── frontend/                     # deck.gl 3D command center
-└── docs/METHODOLOGY.md           # full method, metrics, assumptions
+.
+├── frontend/                 React + deck.gl 3D dashboard
+│   ├── src/components/        MapView (deck.gl layers), HUD panels
+│   └── public/data/           pre-built JSON artifacts
+├── pipeline/                  local pandas analytics → artifacts
+├── kaggle/                    GPU scripts (H3, PCIS, forecast ensemble, optimizer)
+└── docs/
+    ├── METHODOLOGY.md         scoring, validation, assumptions
+    └── SUBMISSION.md          submission notes
 ```
 
-See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the PCIS formula, model
-design, evaluation protocol, and assumptions.
+See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the PCIS formulation, the
+validation protocol, the forecast design, and every stated assumption.
